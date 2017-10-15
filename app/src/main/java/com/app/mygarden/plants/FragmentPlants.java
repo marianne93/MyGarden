@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
     private final int GARDEN_LOADER_ID = 100;
     private Context context;
     private PresenterPlants presenterPlants;
+    private RecyclerView rvPlants;
+    private PlantsListAdapter plantsListAdapter;
 
     public FragmentPlants() {
         // Required empty public constructor
@@ -46,9 +50,19 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_plants, container, false);
+        initializeViews(rootView);
+        initRecyclerView();
         context = getActivity();
         presenterPlants = new PresenterPlants(context, this, FragmentPlants.this);
         return rootView;
+    }
+
+    private void initRecyclerView() {
+        rvPlants.setLayoutManager(
+                new GridLayoutManager(context, 4)
+        );
+        plantsListAdapter = new PlantsListAdapter(context, null);
+        rvPlants.setAdapter(plantsListAdapter);
     }
 
     @Override
@@ -60,6 +74,7 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
     private void loadPlants() {
         presenterPlants.loadPlants();
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -79,7 +94,7 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
 
     @Override
     protected void initializeViews(View v) {
-
+        rvPlants = (RecyclerView) v.findViewById(R.id.rvPlants);
     }
 
     @Override
@@ -89,8 +104,11 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
 
 
     @Override
-    public void onPlantsLoaded(Cursor cursor) {
-
+    public  void onPlantsLoaded(Cursor cursor) {
+        if (cursor != null) {
+            cursor.moveToFirst();
+            plantsListAdapter.swapCursor(cursor);
+        }
     }
 
     /**
