@@ -9,6 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name=".provider.PlantContentProvider"
+            android:authorities="com.app.mygarden"
+            android:exported="true" />
+
         <activity android:name=".plants.ActivityPlants">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".add_plants.ActivityAddPlant"></activity>
+        <activity android:name=".add_plants.ActivityAddPlant" />
+        <activity android:name=".plant_details.ActivityPlantDetails"></activity>
     </application>
 
 </manifest>

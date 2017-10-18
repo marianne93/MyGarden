@@ -36,7 +36,6 @@ public class ActivityPlants extends ActivityBase implements FragmentPlants.OnPla
     protected void loadFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frmFragmentContainer, FragmentPlants.newInstance()).commit();
-
     }
 
     @Override

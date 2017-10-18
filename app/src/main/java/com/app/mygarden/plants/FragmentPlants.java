@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.app.mygarden.R;
+import com.app.mygarden.add_plants.ActivityAddPlant;
 import com.app.mygarden.common.base.FragmentBase;
 
 
@@ -31,6 +33,7 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
     private PresenterPlants presenterPlants;
     private RecyclerView rvPlants;
     private PlantsListAdapter plantsListAdapter;
+    private FloatingActionButton btnAdd;
 
     public FragmentPlants() {
         // Required empty public constructor
@@ -51,8 +54,9 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_plants, container, false);
         initializeViews(rootView);
-        initRecyclerView();
         context = getActivity();
+        initRecyclerView();
+        setListeners();
         presenterPlants = new PresenterPlants(context, this, FragmentPlants.this);
         return rootView;
     }
@@ -95,16 +99,23 @@ public class FragmentPlants extends FragmentBase implements ViewPlants {
     @Override
     protected void initializeViews(View v) {
         rvPlants = (RecyclerView) v.findViewById(R.id.rvPlants);
+        btnAdd = (FloatingActionButton) v.findViewById(R.id.btnAdd);
     }
 
     @Override
     protected void setListeners() {
-
+        btnAdd.setOnClickListener(btnAddClickListener);
     }
 
+    private View.OnClickListener btnAddClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ActivityAddPlant.startActivity(context);
+        }
+    };
 
     @Override
-    public  void onPlantsLoaded(Cursor cursor) {
+    public void onPlantsLoaded(Cursor cursor) {
         if (cursor != null) {
             cursor.moveToFirst();
             plantsListAdapter.swapCursor(cursor);
