@@ -1,6 +1,7 @@
 package com.app.mygarden.plant_details;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,19 +11,12 @@ import android.view.ViewGroup;
 
 import com.app.mygarden.R;
 import com.app.mygarden.common.base.FragmentBase;
+import com.app.mygarden.common.helpers.PlantUtils;
+import com.app.mygarden.provider.PlantContract;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentPlantDetails.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentPlantDetails#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FragmentPlantDetails extends FragmentBase {
-
-    private OnFragmentInteractionListener mListener;
+public class FragmentPlantDetails extends FragmentBase implements ViewPlantDetails {
     private long plantId;
+    private Context context;
 
     public FragmentPlantDetails() {
         // Required empty public constructor
@@ -49,26 +43,11 @@ public class FragmentPlantDetails extends FragmentBase {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_plant_details, container, false);
+        initializeViews(rootView);
+        context = getActivity();
         return rootView;
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
     @Override
     protected void initializeViews(View v) {
@@ -80,18 +59,19 @@ public class FragmentPlantDetails extends FragmentBase {
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onPlantsDetailsLoaded(Cursor cursor) {
+        if (cursor == null || cursor.getCount() < 1) return;
+        cursor.moveToFirst();
+        int createTimeIndex = cursor.getColumnIndex(PlantContract.PlantEntry.COLUMN_CREATION_TIME);
+        int waterTimeIndex = cursor.getColumnIndex(PlantContract.PlantEntry.COLUMN_LAST_WATERED_TIME);
+        int planTypeIndex = cursor.getColumnIndex(PlantContract.PlantEntry.COLUMN_PLANT_TYPE);
+
+        int plantType = cursor.getInt(planTypeIndex);
+        long createdAt = cursor.getLong(createTimeIndex);
+        long wateredAt = cursor.getLong(waterTimeIndex);
+        long timeNow = System.currentTimeMillis();
+
+        int plantImgRes = PlantUtils.getPlantImageRes(context, timeNow - createdAt, timeNow - wateredAt, plantType);
     }
 }

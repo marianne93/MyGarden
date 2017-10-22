@@ -25,7 +25,7 @@ public class ActivityPlantDetails extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plant_details);
+        setContentView(R.layout.activity_with_toolbar_fragment);
         if (getIntent() != null)
             plantId = getIntent().getLongExtra(EXTRA_PLANT_ID, PlantContract.INVALID_PLANT_ID);
         loadFragment();
@@ -44,6 +44,6 @@ public class ActivityPlantDetails extends ActivityBase {
     @Override
     protected void loadFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frmFragmentContainer, FragmentPlantDetails.newInstance( plantId)).commit();
+        fragmentTransaction.replace(R.id.frmFragmentContainer, FragmentPlantDetails.newInstance(plantId)).commit();
     }
 }
